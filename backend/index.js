@@ -28,18 +28,47 @@ app.post("/sendmail", async (req, res) => {
 
   credential
     .find()
-    .then(function (data) {
+    .then(async function (data) {
 
       console.log("DATA:", data);
 
+      if (!data || data.length === 0) {
+        console.log("No credentials found");
+        return res.send(false);
+      }
+
       const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: data[0].toJSON().user,
-    pass: data[0].toJSON().pass,
-  },
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: data[0].toJSON().user,
+          pass: data[0].toJSON().pass,
+        },
+      });
+
+      try {
+        for (let i = 0; i < emaillist.length; i++) {
+          await transporter.sendMail({
+            from: "jayarajraj81@gmail.com",
+            to: emaillist[i],
+            subject: "this message from bulk mail app",
+            text: msg,
+          });
+
+          console.log("email sent to: " + emaillist[i]);
+        }
+
+        res.send(true);
+      } catch (error) {
+        console.log(error);
+        res.send(false);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.send(false);
+    });
 });
 
       console.log(data[0].toJSON());
@@ -63,16 +92,6 @@ app.post("/sendmail", async (req, res) => {
         }
       });
 
-    })
-    .then(() => {
-      res.send(true);
-    })
-    .catch((error) => {
-      console.log(error);
-      res.send(false);
-    });
-
-});
 
 app.listen(5000, () => {
   console.log("server is started");
