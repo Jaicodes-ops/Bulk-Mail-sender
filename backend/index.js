@@ -5,11 +5,7 @@ const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 
 app.use(express.json());
-app.use(cors(
-  {
-    origin:"https://bulk-mail-sender-nvb5.vercel.app/"
-  }
-));
+app.use(cors());
 
 mongoose.connect("mongodb+srv://jayarajraj81:DGziHRyy0uyYWqSX@cluster0.6apn4ev.mongodb.net/passkey?appName=Cluster0")
   .then(function () {
