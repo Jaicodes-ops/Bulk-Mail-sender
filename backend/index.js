@@ -10,7 +10,7 @@ app.use(cors({
   methods:["GET","POST","OPTIONS"],
   allowedHeaders:["Content-Type"]
 }));
-app.options("*",cors(corsoptions));
+app.options("*", cors());
 
 mongoose.connect("mongodb+srv://jayarajraj81:DGziHRyy0uyYWqSX@cluster0.6apn4ev.mongodb.net/passkey?appName=Cluster0")
   .then(function () {
@@ -33,12 +33,14 @@ app.post("/sendmail", async (req, res) => {
       console.log("DATA:", data);
 
       const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: data[0].toJSON().user,
-          pass: data[0].toJSON().pass,
-        },
-      });
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: data[0].toJSON().user,
+    pass: data[0].toJSON().pass,
+  },
+});
 
       console.log(data[0].toJSON());
 
